@@ -7,6 +7,7 @@ public class MyFirstPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
+		System.out.println("----------\nTest\n----------");
 		ExternalPluginManager.loadBuiltin(MyFirstPlugin.class);
 		RuneLite.main(args);
 	}
