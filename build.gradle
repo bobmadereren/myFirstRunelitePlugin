@@ -1,6 +1,5 @@
 plugins {
 	id 'java'
-	id 'application'
 }
 
 repositories {
@@ -14,7 +13,7 @@ repositories {
 def runeLiteVersion = 'latest.release'
 
 dependencies {
-	implementation group: 'net.runelite', name:'client', version: runeLiteVersion
+	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
 
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -24,18 +23,10 @@ dependencies {
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }
 
-group = 'com.myplugin'
-version = '1'
+group = 'com.myFirstRunelitePlugin'
+version = '1.0-SNAPSHOT'
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
-}
-
-jar {
-	manifest {
-		attributes "Main-Class": "com.myfirstplugin.MyClass"
-		attributes 'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
-	}
-
 }
