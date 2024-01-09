@@ -1,4 +1,4 @@
-package com.myfirstruneliteplugin;
+package com.bobmadereren.myfirstruneliteplugin;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;

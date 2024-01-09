@@ -1,4 +1,4 @@
-package com.myfirstruneliteplugin;
+package com.bobmadereren.myfirstruneliteplugin;
 
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
