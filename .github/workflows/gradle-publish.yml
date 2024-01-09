@@ -40,4 +40,4 @@ jobs:
         arguments: publish
       env:
         USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
