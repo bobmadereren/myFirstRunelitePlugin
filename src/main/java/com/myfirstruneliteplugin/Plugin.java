@@ -1,4 +1,4 @@
-package com.myfirstplugin;
+package com.myfirstruneliteplugin;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,6 @@ import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import javax.inject.Inject;
@@ -17,13 +16,13 @@ import javax.inject.Inject;
 @PluginDescriptor(
 	name = "My first plugin!"
 )
-public class MyFirstPlugin extends Plugin
+public class Plugin extends net.runelite.client.plugins.Plugin
 {
 	@Inject
 	private Client client;
 
 	@Inject
-	private MyFirstPluginConfig config;
+	private PluginConfig config;
 
 	@Override
 	protected void startUp() throws Exception
@@ -47,8 +46,8 @@ public class MyFirstPlugin extends Plugin
 	}
 
 	@Provides
-	MyFirstPluginConfig provideConfig(ConfigManager configManager)
+	PluginConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(MyFirstPluginConfig.class);
+		return configManager.getConfig(PluginConfig.class);
 	}
 }
