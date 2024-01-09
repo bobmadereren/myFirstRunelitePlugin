@@ -15,7 +15,6 @@ def runeLiteVersion = 'latest.release'
 
 dependencies {
 	implementation group: 'net.runelite', name:'client', version: runeLiteVersion
-	implementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
