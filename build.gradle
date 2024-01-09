@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	id 'maven-publish'
 }
 
 repositories {
@@ -29,4 +30,17 @@ version = '1.0-SNAPSHOT'
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
+}
+
+publishing {
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/bobmadereren/myfirstruneliteplugin"
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
 }
