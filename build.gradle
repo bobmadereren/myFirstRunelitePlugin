@@ -30,3 +30,14 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
 }
+
+tasks.register("copyToSideloaded"){
+	dependsOn jar;
+	doLast{
+		def pluginPath = System.getProperty("user.home") + "/.runelite/sideloaded-plugins";
+		copy{
+			from "build/libs";
+			into pluginPath;
+		}
+	}
+}
