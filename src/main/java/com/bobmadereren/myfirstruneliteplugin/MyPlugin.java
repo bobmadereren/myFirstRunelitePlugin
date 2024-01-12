@@ -6,9 +6,11 @@ import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GrandExchangeOfferChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
@@ -21,7 +23,7 @@ import javax.inject.Inject;
 		name = "My first plugin!",
 		description = "This is my first plugin :)"
 )
-public class Plugin extends net.runelite.client.plugins.Plugin
+public class MyPlugin extends Plugin
 {
 	@Inject
 	private Client client;
@@ -32,12 +34,17 @@ public class Plugin extends net.runelite.client.plugins.Plugin
 	@Inject
 	private PluginConfig config;
 
+	private boolean buttonClicked = false;
+
+	protected void clickButton() { buttonClicked = true; }
+
 	@Override
 	protected void startUp() throws Exception
 	{
 		log.info("My first plugin started!");
 
-		MasterPanel masterPanel = new MasterPanel();
+		MasterPanel masterPanel = injector.getInstance(MasterPanel.class);
+		//MasterPanel masterPanel = new MasterPanel(client, config);
 
 		NavigationButton navButton = NavigationButton.builder()
 				.tooltip("My first plugin!")
@@ -61,6 +68,14 @@ public class Plugin extends net.runelite.client.plugins.Plugin
 		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
 		{
 			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "My first plugin says " + config.greeting(), null);
+		}
+	}
+
+	@Subscribe
+	public void onGameTick(GameTick gameTick){
+		if(buttonClicked){
+			client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "My first plugin says " + config.greeting(), null);
+			buttonClicked = false;
 		}
 	}
 
