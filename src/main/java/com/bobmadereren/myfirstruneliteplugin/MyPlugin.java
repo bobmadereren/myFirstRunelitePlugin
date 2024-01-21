@@ -78,11 +78,36 @@ public class MyPlugin extends Plugin
 
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged itemContainerChanged){
-		ItemContainer i = itemContainerChanged.getItemContainer();
-		System.out.printf("%nContainer modified - Container ID: %d, Space: %,d / %,d%n", i.getId(), i.count(), i.size());
-		System.out.printf("    %-20s%-20s%n    %-20s%-20s%n", "Name", "Quantity", "----", "--------");
-		for(Item item : i.getItems())
+		ItemContainer itemContainer = itemContainerChanged.getItemContainer();
+		System.out.printf("%nContainer modified - Container ID: %d, Space: %,d / %,d%n" +
+				"    %-20s%-20s%n" +
+				"    %-20s%-20s%n",
+				itemContainer.getId(), itemContainer.count(), itemContainer.size(),
+				"Name", "Quantity",
+				"----", "--------"
+		);
+		for(Item item : itemContainer.getItems())
 			System.out.printf("    %-20s%,-20d%n", itemManager.getItemComposition(item.getId()).getName(), item.getQuantity());
+
+		GrandExchangeOffer[] offers = client.getGrandExchangeOffers();
+		System.out.printf("Grand Exchange offers%n" +
+				"    %-20s%-20s%-20s%-20s%-20s%n" +
+				"    %-20s%-20s%-20s%-20s%-20s%n",
+				"Slot", "Name", "State", "Price", "Quantity",
+				"----", "----", "-----", "-----", "--------"
+		);
+		for(int i = 0; i < 8; i++) {
+			GrandExchangeOffer offer = offers[i];
+			System.out.printf("    %-20d%-20s%-20s%,d / %,-20d%,d / %,-20d%n",
+					i,
+					itemManager.getItemComposition(offer.getItemId()).getName(),
+					offer.getState(),
+					offer.getSpent(),
+					offer.getPrice() * offer.getTotalQuantity(),
+					offer.getQuantitySold(),
+					offer.getTotalQuantity()
+			);
+		}
 	}
 
 	@Subscribe
@@ -92,7 +117,7 @@ public class MyPlugin extends Plugin
 
 	@Subscribe
 	public void onGrandExchangeOfferChanged(GrandExchangeOfferChanged offerChangedEvent) {
-		GrandExchangeOffer offer = offerChangedEvent.getOffer();
+		/*GrandExchangeOffer offer = offerChangedEvent.getOffer();
 		if(offer.getState() == GrandExchangeOfferState.EMPTY) return;
 		System.out.printf("%nGrand Exchange offer change:%n" +
 						"    Slot: %d, Name: %s, State: %s, Price: %,d / %,d, Quantity: %,d / %,d%n",
@@ -103,7 +128,7 @@ public class MyPlugin extends Plugin
 				offer.getPrice() * offer.getTotalQuantity(),
 				offer.getQuantitySold(),
 				offer.getTotalQuantity()
-		);
+		);*/
 	}
 
 	@Provides
