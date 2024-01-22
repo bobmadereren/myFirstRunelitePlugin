@@ -1,88 +1,60 @@
 package com.bobmadereren.myfirstruneliteplugin;
 
-import net.runelite.api.Client;
-import net.runelite.api.widgets.Widget;
+import lombok.Getter;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.PluginPanel;
 
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class MasterPanel extends PluginPanel {
 
-    private final Client client;
-    private final MyPlugin plugin;
+    private JTabbedPane tabbedPane;
+
+    @Getter
+    private ProgressBarPanel progressBarPanel;
 
     @Inject
-    MasterPanel(Client client, MyPlugin plugin){
+    public MasterPanel(ItemManager itemManager) {
         super();
-        this.client = client;
-        this.plugin = plugin;
-        createPanel();
+
+        // Set layout manager
+        setLayout(new BorderLayout());
+
+        // Create a JTabbedPane
+        tabbedPane = new JTabbedPane();
+
+        // Create three pages (you can customize these pages)
+        JPanel page1 = createPage("Page 1 Content");
+        JPanel page2 = createPage("Page 2 Content");
+        JPanel page3 = createPage("Page 3 Content");
+
+        // Add pages to the tabbedPane
+        tabbedPane.addTab("Page 1", null, page1, "Page 1 Tooltip");
+        tabbedPane.addTab("Page 2", null, page2, "Page 2 Tooltip");
+        tabbedPane.addTab("Page 3", null, page3, "Page 3 Tooltip");
+
+        // Create a ProgressBarPanel with constructor injection and add it to the panel
+        progressBarPanel = new ProgressBarPanel();
+        tabbedPane.addTab("Progress Bars", null, progressBarPanel, "Progress Bars");
+
+        // Add the tabbedPane to the panel
+        add(tabbedPane, BorderLayout.CENTER);
+
+        // Add an event listener to handle tab changes
+        tabbedPane.addChangeListener(e -> handleTabChange());
     }
 
-    private void createPanel(){
-        setBackground(Color.orange);
-
-        JButton button = new JButton("I am the button");
-        button.addActionListener(plugin.setButtonClicked);
-
-        JButton widgetButton = new JButton("Widget");
-        widgetButton.addActionListener(e -> {
-            Widget historyWidget = client.getWidget(383, 3);
-            if(historyWidget != null) {
-                Widget[] widgets = historyWidget.getDynamicChildren();
-                System.out.println("Number of widgets: " + widgets.length);
-                if (widgets.length >= 6) {
-                    Widget priceWidget = widgets[5];
-                    String text = priceWidget.getText();
-                    System.out.println(text);
-                }
-            } else {
-                System.out.println("History Widget is null");
-            }
-        });
-
-        JButton historyButton = new JButton("History button");
-        historyButton.addActionListener(e -> {
-            Widget widget = client.getWidget(465, 3);
-            if(widget != null){
-                Object[] objects = widget.getOnOpListener();
-                if(objects != null) {
-                    for (Object object : objects) {
-                        if (object != null) {
-                            System.out.println("Type: " + object.getClass() + ", To string: " + object.toString());
-                        } else {
-                            System.out.println("Object (script / argument) is null");
-                        }
-
-                    }
-                } else {
-                    System.out.println("Object[] is null (has no script)");
-                }
-            } else {
-                System.out.println("History button is null");
-            }
-        });
-
-        JButton changeCollectScript = new JButton("Change collect script");
-        changeCollectScript.addActionListener(e -> {
-            Widget history = client.getWidget(465, 3);
-            Widget collectHead = client.getWidget(465, 6);
-            if(history == null || collectHead == null){
-                System.out.println("History or Collect-Head is null");
-            } else {
-                Object[] historyScript = history.getOnOpListener();
-                collectHead.setOnOpListener(historyScript);
-                System.out.println("New script added to Collect Head: " + Arrays.deepToString(historyScript));
-            }
-        });
-
-        add(button);
-        add(widgetButton);
-        add(historyButton);
-        add(changeCollectScript);
+    private JPanel createPage(String content) {
+        JPanel pagePanel = new JPanel();
+        pagePanel.add(new JLabel(content));
+        return pagePanel;
     }
 
+    private void handleTabChange() {
+        // Handle tab change event, update the UI or perform other actions
+        int selectedIndex = tabbedPane.getSelectedIndex();
+        System.out.println("Selected Tab Index: " + selectedIndex);
+    }
 }
