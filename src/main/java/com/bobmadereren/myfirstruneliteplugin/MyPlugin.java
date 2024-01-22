@@ -1,5 +1,6 @@
 package com.bobmadereren.myfirstruneliteplugin;
 
+import com.bobmadereren.myfirstruneliteplugin.offer.OfferManager;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -40,10 +41,12 @@ public class MyPlugin extends Plugin
 
 	private MasterPanel masterPanel;
 
+	private OfferManager offerManager;
+
 	@Override
 	protected void startUp() throws Exception
 	{
-		log.info("My first plugin started!");
+		offerManager = injector.getInstance(OfferManager.class);
 
 		masterPanel = injector.getInstance(MasterPanel.class);
 
@@ -66,35 +69,56 @@ public class MyPlugin extends Plugin
 	@Subscribe
 	public void onGrandExchangeOfferChanged(GrandExchangeOfferChanged offerChangedEvent)
 	{
-		masterPanel.getProgressBarPanel()
-				.getProgressBar(offerChangedEvent.getSlot())
-				.update(offerChangedEvent.getOffer(), itemManager);
+		offerManager.onGrandExchangeOfferChanged(offerChangedEvent);
+		masterPanel.getProgressBarPanel().getProgressBar(offerChangedEvent.getSlot()).update(offerChangedEvent.getOffer(), itemManager);
 	}
 
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged itemContainerChanged)
 	{
-		ItemContainer itemContainer = itemContainerChanged.getItemContainer();
-		System.out.printf("%nContainer modified - Container ID: %d, Space: %,d / %,d%n" +
-				"    %-20s%-20s%n" +
-				"    %-20s%-20s%n",
-				itemContainer.getId(), itemContainer.count(), itemContainer.size(),
-				"Name", "Quantity",
-				"----", "--------"
-		);
-		for(Item item : itemContainer.getItems())
-			System.out.printf("    %-20s%,-20d%n", itemManager.getItemComposition(item.getId()).getName(), item.getQuantity());
+		offerManager.onItemContainerChanged(itemContainerChanged);
+	}
 
+	private String containerString(ItemContainer itemContainer)
+	{
+		String cell = "%-30s";
+		String tab = "    ";
+		StringBuilder result = new StringBuilder();
+
+		result.append(String.format("Container ID: %d, Space: %,d / %,d%n" +
+						tab + cell + cell + "%n" +
+                        tab + cell + cell + "%n",
+				itemContainer.getId(), itemContainer.count(), itemContainer.size(),
+                "Name", "Quantity",
+                "----", "--------"
+        ));
+
+		for(Item item : itemContainer.getItems())
+			result.append(String.format(tab + cell + cell + "%n", itemManager.getItemComposition(item.getId()).getName(), item.getQuantity()));
+
+		return result.toString();
+	}
+
+	private String grandExchangeString()
+	{
 		GrandExchangeOffer[] offers = client.getGrandExchangeOffers();
-		System.out.printf("Grand Exchange offers%n" +
-				"    %-20s%-20s%-20s%-20s%-20s%n" +
-				"    %-20s%-20s%-20s%-20s%-20s%n",
+
+		String cell = "%-30s";
+		String intCell = "%,-30d";
+		String fractionCell = "%,d / %,-30d";
+		String tab = "    ";
+		StringBuilder result = new StringBuilder();
+
+		result.append(String.format("Grand Exchange offers%n" +
+						tab + cell.repeat(5) + "%n" +
+						tab + cell.repeat(5) + "%n",
 				"Slot", "Name", "State", "Price", "Quantity",
 				"----", "----", "-----", "-----", "--------"
-		);
+		));
+
 		for(int i = 0; i < 8; i++) {
 			GrandExchangeOffer offer = offers[i];
-			System.out.printf("    %-20d%-20s%-20s%,d / %,-20d%,d / %,-20d%n",
+			result.append(String.format(tab + intCell + cell + cell + fractionCell + fractionCell + "%n",
 					i,
 					itemManager.getItemComposition(offer.getItemId()).getName(),
 					offer.getState(),
@@ -102,8 +126,9 @@ public class MyPlugin extends Plugin
 					offer.getPrice() * offer.getTotalQuantity(),
 					offer.getQuantitySold(),
 					offer.getTotalQuantity()
-			);
+			));
 		}
+		return result.toString();
 	}
 
 	@Provides
