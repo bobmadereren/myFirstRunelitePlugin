@@ -1,6 +1,8 @@
 package com.bobmadereren.myfirstruneliteplugin;
 
+import com.bobmadereren.myfirstruneliteplugin.offer.Offer;
 import com.bobmadereren.myfirstruneliteplugin.offer.OfferManager;
+import com.bobmadereren.myfirstruneliteplugin.ui.MasterPanel;
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
@@ -69,8 +71,8 @@ public class MyPlugin extends Plugin
 	@Subscribe
 	public void onGrandExchangeOfferChanged(GrandExchangeOfferChanged offerChangedEvent)
 	{
-		offerManager.onGrandExchangeOfferChanged(offerChangedEvent);
-		masterPanel.getProgressBarPanel().getProgressBar(offerChangedEvent.getSlot()).update(offerChangedEvent.getOffer(), itemManager);
+		Offer offer = offerManager.onGrandExchangeOfferChanged(offerChangedEvent.getSlot(), offerChangedEvent.getOffer());
+		masterPanel.getProgressBarPanel().getProgressBar(offerChangedEvent.getSlot()).update(offer, itemManager);
 	}
 
 	private ItemContainer firstItemContainer;
@@ -78,7 +80,7 @@ public class MyPlugin extends Plugin
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged itemContainerChanged)
 	{
-		offerManager.onItemContainerChanged(itemContainerChanged);
+		offerManager.onItemContainerChanged(itemContainerChanged.getItemContainer());
 	}
 
 	private String containerString(ItemContainer itemContainer)

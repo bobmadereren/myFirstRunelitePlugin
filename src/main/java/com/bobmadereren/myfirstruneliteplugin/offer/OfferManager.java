@@ -3,8 +3,6 @@ package com.bobmadereren.myfirstruneliteplugin.offer;
 import net.runelite.api.GrandExchangeOffer;
 import net.runelite.api.GrandExchangeOfferState;
 import net.runelite.api.ItemContainer;
-import net.runelite.api.events.GrandExchangeOfferChanged;
-import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.client.game.ItemManager;
 
 import javax.inject.Inject;
@@ -27,45 +25,39 @@ public class OfferManager {
         this.itemManager = itemManager;
     }
 
-    public void onGrandExchangeOfferChanged(GrandExchangeOfferChanged offerChangedEvent){
-        if(offerChangedEvent.getOffer().getState() == GrandExchangeOfferState.EMPTY) return;
+    public Offer onGrandExchangeOfferChanged(int slot, GrandExchangeOffer offer){
+        if(offer.getState() == GrandExchangeOfferState.EMPTY)
+            return null;
 
-        int slot = offerChangedEvent.getSlot();
-        GrandExchangeOffer offer = offerChangedEvent.getOffer();
-
-        if(activeOffers[slot] == null) {
+        if(activeOffers[slot] == null)
             activeOffers[slot] = newOffer(offer);
-            System.out.println("Creating new offer - " + activeOffers[slot]);
-        }
-        else {
-            activeOffers[slot].setProgressValue(offer.getQuantitySold());
-            System.out.println("Offer progress - " + activeOffers[slot]);
-        }
+        else
+            activeOffers[slot].setProgressSold(offer.getQuantitySold());
+
+        return activeOffers[slot];
     }
 
-    public void onItemContainerChanged(ItemContainerChanged itemContainerChanged)
+    public void onItemContainerChanged(ItemContainer itemContainer)
     {
-        ItemContainer newItemContainer = itemContainerChanged.getItemContainer();
-        int slot = Arrays.binarySearch(COLLECT_BOX_CONTAINER_ID, newItemContainer.getId());
+        int slot = Arrays.binarySearch(COLLECT_BOX_CONTAINER_ID, itemContainer.getId());
+
         if(slot < 0) return;
 
         Offer offer = activeOffers[slot];
-        int itemId = offer.getItemId();
+        int itemId = offer.getItem().getId();
         int coinsId = 995;
 
-        if(!newItemContainer.contains(itemId))
+        if(!itemContainer.contains(itemId))
             offer.collectItems(collectionBoxItems[slot]);
 
-        if(!newItemContainer.contains(coinsId))
+        if(!itemContainer.contains(coinsId))
             offer.collectCoins(collectionBoxCoins[slot]);
 
-        System.out.println("Container change - " + activeOffers[slot]);
-
-        if(newItemContainer.count() == 0)
+        if(itemContainer.count() == 0)
             activeOffers[slot] = null;
 
-        collectionBoxItems[slot] = newItemContainer.count(itemId);
-        collectionBoxCoins[slot] = newItemContainer.count(coinsId);
+        collectionBoxItems[slot] = itemContainer.count(itemId);
+        collectionBoxCoins[slot] = itemContainer.count(coinsId);
     }
 
     private Offer newOffer(GrandExchangeOffer offer) {

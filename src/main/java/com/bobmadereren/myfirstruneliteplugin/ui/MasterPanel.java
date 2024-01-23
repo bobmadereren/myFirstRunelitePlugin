@@ -1,4 +1,4 @@
-package com.bobmadereren.myfirstruneliteplugin;
+package com.bobmadereren.myfirstruneliteplugin.ui;
 
 import lombok.Getter;
 import net.runelite.client.game.ItemManager;

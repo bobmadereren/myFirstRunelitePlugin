@@ -1,4 +1,4 @@
-package com.bobmadereren.myfirstruneliteplugin;
+package com.bobmadereren.myfirstruneliteplugin.ui;
 
 import javax.inject.Inject;
 import javax.swing.*;
@@ -13,8 +13,6 @@ public class ProgressBarPanel extends JPanel {
 
         progressBars = new ProgressBar[8];
         for (int i = 0; i < 8; i++) {
-            add(Box.createVerticalStrut(10));
-
             ProgressBar progressBar = new ProgressBar(i);
             add(progressBar);
 
