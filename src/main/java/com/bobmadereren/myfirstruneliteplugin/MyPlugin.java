@@ -73,6 +73,8 @@ public class MyPlugin extends Plugin
 		masterPanel.getProgressBarPanel().getProgressBar(offerChangedEvent.getSlot()).update(offerChangedEvent.getOffer(), itemManager);
 	}
 
+	private ItemContainer firstItemContainer;
+
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged itemContainerChanged)
 	{

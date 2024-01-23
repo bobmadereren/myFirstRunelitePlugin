@@ -28,12 +28,12 @@ public abstract class Offer {
 
     public void collectItems(int quantity){
         netItems += quantity;
-        System.out.println("Net items: " + netItems);
+        System.out.println("Collecting " + quantity + " items");
     }
 
     public void collectCoins(int quantity){
         netCoins += quantity;
-        System.out.println("Net coins: " + netCoins);
+        System.out.println("Collecting " + quantity + " coins");
     }
 
     @Override

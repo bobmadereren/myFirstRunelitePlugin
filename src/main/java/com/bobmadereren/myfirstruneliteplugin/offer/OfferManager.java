@@ -14,7 +14,9 @@ public class OfferManager {
 
     private final Offer[] activeOffers = new Offer[8];
 
-    private final ItemContainer[] lastObservedItemContainers = new ItemContainer[8];
+    private final int[] collectionBoxItems = new int[8];
+
+    private final int[] collectionBoxCoins = new int[8];
 
     private static final int[] COLLECT_BOX_CONTAINER_ID = new int[]{518, 519, 520, 521, 522, 523, 539, 540};
 
@@ -47,26 +49,23 @@ public class OfferManager {
         int slot = Arrays.binarySearch(COLLECT_BOX_CONTAINER_ID, newItemContainer.getId());
         if(slot < 0) return;
 
-        // TODO fix bug caused by ItemContainer being mutable
-        ItemContainer oldItemContainer = lastObservedItemContainers[slot];
-        if(oldItemContainer != null) {
-            Offer offer = activeOffers[slot];
-            int itemId = offer.getItemId();
-            int coinsId = 995;
+        Offer offer = activeOffers[slot];
+        int itemId = offer.getItemId();
+        int coinsId = 995;
 
-            if(!newItemContainer.contains(itemId))
-                offer.collectItems(oldItemContainer.count(itemId));
+        if(!newItemContainer.contains(itemId))
+            offer.collectItems(collectionBoxItems[slot]);
 
-            if(!newItemContainer.contains(coinsId))
-                offer.collectCoins(oldItemContainer.count(coinsId));
-        }
+        if(!newItemContainer.contains(coinsId))
+            offer.collectCoins(collectionBoxCoins[slot]);
 
-        System.out.println("Container changed / observed - " + activeOffers[slot]);
+        System.out.println("Container change - " + activeOffers[slot]);
 
         if(newItemContainer.count() == 0)
             activeOffers[slot] = null;
 
-        lastObservedItemContainers[slot] = newItemContainer;
+        collectionBoxItems[slot] = newItemContainer.count(itemId);
+        collectionBoxCoins[slot] = newItemContainer.count(coinsId);
     }
 
     private Offer newOffer(GrandExchangeOffer offer) {
