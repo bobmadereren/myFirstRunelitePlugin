@@ -11,6 +11,7 @@ public class ProgressBarPanel extends JPanel {
     public ProgressBarPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+
         progressBars = new ProgressBar[8];
         for (int i = 0; i < 8; i++) {
             ProgressBar progressBar = new ProgressBar(i);

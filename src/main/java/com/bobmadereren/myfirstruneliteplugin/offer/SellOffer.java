@@ -15,7 +15,7 @@ public class SellOffer extends Offer {
     @Override
     public void collectCoins(int quantity){
         super.collectCoins(quantity);
-        progressCollected = getProgressTotal();
+        progressCollected = getProgressSold();
     }
 
 }

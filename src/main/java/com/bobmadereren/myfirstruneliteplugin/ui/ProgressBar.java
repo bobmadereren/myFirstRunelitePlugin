@@ -1,9 +1,9 @@
 package com.bobmadereren.myfirstruneliteplugin.ui;
 
 import com.bobmadereren.myfirstruneliteplugin.offer.Offer;
-import net.runelite.api.ItemComposition;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.FontManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +12,9 @@ import java.awt.image.BufferedImage;
 
 public class ProgressBar extends JPanel {
 
-    private final JLabel indexLabel;
+    private final JLabel nameLabel;
+
+    private final JLabel detailsLabel;
 
     private final JLabel imageLabel;
 
@@ -21,16 +23,25 @@ public class ProgressBar extends JPanel {
     private final JProgressBar collectedBar;
 
     public ProgressBar(int index) {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
         setBackground(ColorScheme.DARKER_GRAY_COLOR);
         setBorder(new EmptyBorder(7, 7, 7, 7));
 
-        indexLabel = new JLabel("Slot " + (index + 1));
+        JPanel infoPanel = new JPanel(new GridLayout(2, 1, 0, 2));
+        infoPanel.setOpaque(false);
+
+        nameLabel = new JLabel("Name");
+        nameLabel.setFont(FontManager.getRunescapeSmallFont());
+
+        detailsLabel = new JLabel("Details");
+        detailsLabel.setFont(FontManager.getRunescapeSmallFont());
+
+        infoPanel.add(nameLabel);
+        infoPanel.add(detailsLabel);
 
         imageLabel = new JLabel(new ImageIcon());
         imageLabel.setVerticalAlignment(JLabel.CENTER);
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
-        imageLabel.setPreferredSize(new Dimension(30, 30));
 
         JPanel dualProgressBar = new JPanel();
         dualProgressBar.setLayout(new OverlayLayout(dualProgressBar));
@@ -48,8 +59,8 @@ public class ProgressBar extends JPanel {
         dualProgressBar.add(collectedBar);
         dualProgressBar.add(progressBar);
 
-        add(indexLabel, BorderLayout.WEST);
-        add(imageLabel, BorderLayout.CENTER);
+        add(infoPanel, BorderLayout.CENTER);
+        add(imageLabel, BorderLayout.WEST);
         add(dualProgressBar, BorderLayout.SOUTH);
     }
 
@@ -59,17 +70,18 @@ public class ProgressBar extends JPanel {
             return;
         }
 
-        ItemComposition item = offer.getItem();
-        boolean shouldStack = item.isStackable() || offer.getProgressTotal() > 1;
-        BufferedImage itemImage = itemManager.getImage(item.getId(), offer.getProgressTotal(), shouldStack);
+        BufferedImage itemImage = itemManager.getImage(offer.getItem().getId());
         imageLabel.setIcon(new ImageIcon(itemImage));
+
+        nameLabel.setText(offer.getItem().getName());
+
+        detailsLabel.setText("Collected / Sold / Total: " + offer.getProgressCollected() + " / " + offer.getProgressSold() + " / " + offer.getProgressTotal());
 
         collectedBar.setMaximum(offer.getProgressTotal());
         collectedBar.setValue(offer.getProgressCollected());
 
         progressBar.setMaximum(offer.getProgressTotal());
         progressBar.setValue(offer.getProgressSold());
-        progressBar.setString(offer.getProgressSold() + " / " + offer.getProgressTotal());
 
         setVisible(true);
     }
