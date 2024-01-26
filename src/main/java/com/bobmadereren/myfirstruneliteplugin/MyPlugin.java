@@ -1,6 +1,6 @@
 package com.bobmadereren.myfirstruneliteplugin;
 
-import com.bobmadereren.myfirstruneliteplugin.offer.Offer;
+import com.bobmadereren.myfirstruneliteplugin.offer.OfferChanges;
 import com.bobmadereren.myfirstruneliteplugin.offer.OfferManager;
 import com.bobmadereren.myfirstruneliteplugin.ui.MasterPanel;
 import com.google.inject.Provides;
@@ -71,8 +71,11 @@ public class MyPlugin extends Plugin
 	@Subscribe
 	public void onGrandExchangeOfferChanged(GrandExchangeOfferChanged event)
 	{
-		Offer offer = offerManager.onGrandExchangeOfferChanged(event.getSlot(), event.getOffer());
-		masterPanel.getProgressBarPanel().getProgressBar(event.getSlot()).update(offer, itemManager);
+		OfferChanges offerChange = offerManager.onGrandExchangeOfferChanged(event.getSlot(), event.getOffer());
+		if(offerChange.changes.length > 0) {
+			masterPanel.getProgressBarPanel().getProgressBar(offerChange.slot).update(offerChange.offer, itemManager);
+			System.out.println(offerChange);
+		}
 	}
 
 	private ItemContainer firstItemContainer;
@@ -80,8 +83,14 @@ public class MyPlugin extends Plugin
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		offerManager.onItemContainerChanged(event.getItemContainer());
-		//masterPanel.getProgressBarPanel().getProgressBar(slot).update(offer, itemManager);
+		OfferChanges offerChange = offerManager.onItemContainerChanged(event);
+
+		if(offerChange.changes.length > 0)
+			System.out.println(offerChange);
+
+		if(offerChange.isArchived()){
+			masterPanel.getProgressBarPanel().getProgressBar(offerChange.slot).update(offerChange.offer, itemManager);
+		}
 	}
 
 	@Provides

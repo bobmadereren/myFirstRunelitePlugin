@@ -75,13 +75,13 @@ public class ProgressBar extends JPanel {
 
         nameLabel.setText(offer.getItem().getName());
 
-        detailsLabel.setText("Collected / Sold / Total: " + offer.getProgressCollected() + " / " + offer.getProgressSold() + " / " + offer.getProgressTotal());
+        detailsLabel.setText("Collected / Sold / Total: " + offer.getProgressCollected() + " / " + offer.getProgressValue() + " / " + offer.getProgressTotal());
 
         collectedBar.setMaximum(offer.getProgressTotal());
         collectedBar.setValue(offer.getProgressCollected());
 
         progressBar.setMaximum(offer.getProgressTotal());
-        progressBar.setValue(offer.getProgressSold());
+        progressBar.setValue(offer.getProgressValue());
 
         setVisible(true);
     }

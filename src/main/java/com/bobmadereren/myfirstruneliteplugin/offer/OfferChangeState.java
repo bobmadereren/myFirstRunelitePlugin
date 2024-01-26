@@ -7,20 +7,41 @@ public enum OfferChangeState {
     CREATED,
 
     /**
-     * A tracked offer is sold (or bought) .
+     * A tracked offer sold (or bought).
      */
-    SOLD,
+    SOLD_PARTIALLY,
+
+    /**
+     * A tracked offer sold (or bought) out.
+     */
+    SOLD_OUT,
+
+    /**
+     * A tracked offer was cancelled.
+     */
+    CANCELLED,
 
     /**
      * A tracked offer's collection box is observed with a higher quantity
-     * of coins or items than it was previously observed with.
+     * of items than it was previously observed with.
      */
-    COLLECTION_BOX_OBSERVED,
+    OBSERVED_ITEMS,
 
     /**
-     * One or both of the items in the collection box of a tracked offer is being collected.
+     * A tracked offer's collection box is observed with a higher quantity
+     * of coins than it was previously observed with.
      */
-    COLLECTED,
+    OBSERVED_COINS,
+
+    /**
+     * Items has been collected from the collection box of a tracked offer.
+     */
+    COLLECTED_ITEMS,
+
+    /**
+     * Coins has been collected from the collection box of a tracked offer.
+     */
+    COLLECTED_COINS,
 
     /**
      * A tracked offer has been archived.

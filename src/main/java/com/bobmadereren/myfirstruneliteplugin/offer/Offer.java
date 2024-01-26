@@ -1,7 +1,6 @@
 package com.bobmadereren.myfirstruneliteplugin.offer;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.runelite.api.ItemComposition;
 
 @Getter
@@ -11,10 +10,9 @@ public abstract class Offer {
 
     private final int price;
 
-    private final int progressTotal;
+    private int progressTotal;
 
-    @Setter
-    private int progressSold;
+    private int progressValue;
 
     public abstract int getProgressCollected();
 
@@ -30,12 +28,20 @@ public abstract class Offer {
         this.netCoins = netCoins;
     }
 
-    public void collectItems(int quantity) {
+    protected void collectItems(int quantity) {
         netItems += quantity;
     }
 
-    public void collectCoins(int quantity){
+    protected void collectCoins(int quantity){
         netCoins += quantity;
+    }
+
+    protected void progress(int value){
+        progressValue += value;
+    }
+
+    protected void cancel(){
+        progressTotal = progressValue;
     }
 
     @Override
@@ -43,10 +49,13 @@ public abstract class Offer {
         return String.format("Name: %s, Price: %,d, Progress: %,d / %,d, Net items: %,d, Net coins %,d",
                 item.getName(),
                 price,
-                progressSold, progressTotal,
+                progressValue, progressTotal,
                 netItems,
                 netCoins
         );
     }
 
+    protected boolean isSoldOut(){
+        return progressValue == progressTotal;
+    }
 }
